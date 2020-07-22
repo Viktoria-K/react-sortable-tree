@@ -1,41 +1,41 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { AutoSizer, List } from 'react-virtualized';
-import isEqual from 'lodash.isequal';
 import withScrolling, {
+  createHorizontalStrength,
   createScrollingComponent,
   createVerticalStrength,
-  createHorizontalStrength,
 } from 'frontend-collective-react-dnd-scrollzone';
-import { DndProvider, DndContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { DndContext, DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import { polyfill } from 'react-lifecycles-compat';
+import { AutoSizer, List } from 'react-virtualized';
 import 'react-virtualized/styles.css';
-import TreeNode from './tree-node';
 import NodeRendererDefault from './node-renderer-default';
-import TreePlaceholder from './tree-placeholder';
 import PlaceholderRendererDefault from './placeholder-renderer-default';
-import {
-  walk,
-  changeNodeAtPath,
-  removeNode,
-  insertNode,
-  find,
-  toggleExpandedForAll,
-} from './utils/tree-data-utils';
-import {
-  memoizedInsertNode,
-  memoizedGetFlatDataFromTree,
-  memoizedGetDescendantCount,
-} from './utils/memoized-tree-data-utils';
-import { slideRows } from './utils/generic-utils';
+import './react-sortable-tree.css';
+import TreeNode from './tree-node';
+import TreePlaceholder from './tree-placeholder';
+import classnames from './utils/classnames';
 import {
   defaultGetNodeKey,
   defaultSearchMethod,
 } from './utils/default-handlers';
 import DndManager from './utils/dnd-manager';
-import classnames from './utils/classnames';
-import './react-sortable-tree.css';
+import { slideRows } from './utils/generic-utils';
+import {
+  memoizedGetDescendantCount,
+  memoizedGetFlatDataFromTree,
+  memoizedInsertNode,
+} from './utils/memoized-tree-data-utils';
+import {
+  changeNodeAtPath,
+  find,
+  insertNode,
+  removeNode,
+  toggleExpandedForAll,
+  walk,
+} from './utils/tree-data-utils';
 
 let treeIdCounter = 1;
 
@@ -255,12 +255,12 @@ class ReactSortableTree extends Component {
   }
 
   moveNode({
-    node,
-    path: prevPath,
-    treeIndex: prevTreeIndex,
-    depth,
-    minimumTreeIndex,
-  }) {
+             node,
+             path: prevPath,
+             treeIndex: prevTreeIndex,
+             depth,
+             minimumTreeIndex,
+           }) {
     const {
       treeData,
       treeIndex,
@@ -320,9 +320,9 @@ class ReactSortableTree extends Component {
       getNodeKey,
       treeData: onlyExpandSearchedNodes
         ? toggleExpandedForAll({
-            treeData: instanceProps.treeData,
-            expanded: false,
-          })
+          treeData: instanceProps.treeData,
+          expanded: false,
+        })
         : instanceProps.treeData,
       searchQuery,
       searchMethod: searchMethod || defaultSearchMethod,
@@ -379,10 +379,10 @@ class ReactSortableTree extends Component {
   }
 
   dragHover({
-    node: draggedNode,
-    depth: draggedDepth,
-    minimumTreeIndex: draggedMinimumTreeIndex,
-  }) {
+              node: draggedNode,
+              depth: draggedDepth,
+              minimumTreeIndex: draggedMinimumTreeIndex,
+            }) {
     // Ignore this hover if it is at the same position as the last hover
     if (
       this.state.draggedDepth === draggedDepth &&
@@ -527,9 +527,9 @@ class ReactSortableTree extends Component {
                     //  for in the first place
                     oldNode === node
                       ? {
-                          ...oldNode,
-                          children: childrenArray,
-                        }
+                        ...oldNode,
+                        children: childrenArray,
+                      }
                       : oldNode,
                   getNodeKey: props.getNodeKey,
                 })
@@ -711,12 +711,12 @@ class ReactSortableTree extends Component {
                 typeof rowHeight !== 'function'
                   ? rowHeight
                   : ({ index }) =>
-                      rowHeight({
-                        index,
-                        treeIndex: index,
-                        node: rows[index].node,
-                        path: rows[index].path,
-                      })
+                    rowHeight({
+                      index,
+                      treeIndex: index,
+                      node: rows[index].node,
+                      path: rows[index].path,
+                    })
               }
               rowRenderer={({ index, style: rowStyle }) =>
                 this.renderRow(rows[index], {
@@ -744,11 +744,11 @@ class ReactSortableTree extends Component {
               typeof rowHeight !== 'function'
                 ? rowHeight
                 : rowHeight({
-                    index,
-                    treeIndex: index,
-                    node: row.node,
-                    path: row.path,
-                  }),
+                  index,
+                  treeIndex: index,
+                  node: row.node,
+                  path: row.path,
+                }),
           },
           getPrevRow: () => rows[index - 1] || null,
           matchKeys,
@@ -950,9 +950,9 @@ const SortableTreeWithoutDndContext = props => (
 
 const SortableTree = props => (
   <DndProvider backend={HTML5Backend}>
-    <SortableTreeWithoutDndContext {...props}/>
+    <SortableTreeWithoutDndContext {...props} />
   </DndProvider>
-)
+);
 
 // Export the tree component without the react-dnd DragDropContext,
 // for when component is used with other components using react-dnd.
